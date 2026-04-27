@@ -1,0 +1,214 @@
+/* ================================================================
+   ITERATION TABLE STYLES — iteration-table.component.css
+   ================================================================ */
+
+/* ── Section Header ──────────────────────────────────────────── */
+.iterations-section {
+  margin-top: var(--space-xl);
+}
+
+.iterations-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: var(--space-lg);
+}
+
+/* ── Timeline Layout ─────────────────────────────────────────── */
+.iterations-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+/* ── Iteration Card ──────────────────────────────────────────── */
+.iteration-card {
+  overflow: hidden;
+  transition: box-shadow var(--transition-normal);
+}
+
+.iteration-card:hover {
+  box-shadow: var(--shadow-glow);
+}
+
+.iteration-card.expanded {
+  border-color: rgba(0, 212, 255, 0.2);
+}
+
+/* ── Step Header (Clickable) ─────────────────────────────────── */
+.step-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  text-align: left;
+  transition: background var(--transition-fast);
+}
+
+.step-header:hover {
+  background: rgba(0, 212, 255, 0.03);
+}
+
+.step-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.step-number {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--gradient-accent);
+  color: white;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.step-line {
+  width: 2px;
+  height: 8px;
+  background: rgba(0, 212, 255, 0.2);
+  border-radius: 1px;
+}
+
+.step-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.step-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.step-z {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--color-accent-cyan);
+}
+
+.step-chevron {
+  font-size: 0.7rem;
+  color: var(--color-text-dim);
+  transition: transform var(--transition-fast);
+}
+
+.step-chevron.rotated {
+  transform: rotate(90deg);
+}
+
+/* ── Step Content (Expandable) ───────────────────────────────── */
+.step-content {
+  padding: 0 var(--space-lg) var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Basis Variables */
+.basis-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.basis-label {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.basis-var {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-accent-purple);
+  background: rgba(124, 58, 237, 0.12);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
+/* Pivot Info */
+.pivot-info {
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  color: var(--color-accent-amber);
+  padding: var(--space-xs) var(--space-sm);
+  background: rgba(245, 158, 11, 0.08);
+  border-radius: var(--radius-sm);
+  border-left: 2px solid var(--color-accent-amber);
+}
+
+/* ── Tableau Table ───────────────────────────────────────────── */
+.tableau-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tableau {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+
+.tableau td {
+  padding: 0.5rem 0.75rem;
+  text-align: right;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.tableau tr:hover td {
+  background: rgba(0, 212, 255, 0.03);
+}
+
+/* Pivot cell — glowing highlight */
+.tableau td.pivot-cell {
+  background: rgba(0, 212, 255, 0.15);
+  color: var(--color-accent-cyan);
+  font-weight: 700;
+  box-shadow: inset 0 0 10px rgba(0, 212, 255, 0.1);
+  border-color: rgba(0, 212, 255, 0.3);
+}
+
+/* Negative values shown in red */
+.tableau td.negative {
+  color: var(--color-accent-red);
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .step-header {
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .step-content {
+    padding: 0 var(--space-md) var(--space-md);
+  }
+
+  .tableau {
+    font-size: 0.7rem;
+  }
+
+  .tableau td {
+    padding: 0.35rem 0.5rem;
+  }
+}

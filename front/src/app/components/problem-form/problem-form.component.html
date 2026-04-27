@@ -1,0 +1,194 @@
+<!-- ================================================================
+     PROBLEM FORM TEMPLATE — problem-form.component.html
+     ================================================================
+
+     🔑 KEY CONCEPT: Angular Template Syntax
+     ────────────────────────────────────────
+     [formGroup]="form"     → Property binding: connects <form> to our
+                               Reactive Form object in the TypeScript file.
+     formControlName="x"    → Links an <input> to a specific FormControl.
+     formArrayName="x"      → Links a section to a FormArray.
+     (ngSubmit)="submit()"  → Event binding: calls submit() on form submit.
+     {{ expression }}        → Interpolation: displays a value.
+
+     🔑 KEY CONCEPT: @for / @if (Built-in Control Flow)
+     ───────────────────────────────────────────────────
+     Angular 17+ replaced *ngFor and *ngIf with built-in syntax:
+       @for (item of items; track item) { ... }
+       @if (condition) { ... } @else { ... }
+     These are BUILT-IN — no imports needed. They're faster and cleaner.
+================================================================ -->
+
+<!-- 📋 The <form> tag binds to our FormGroup via [formGroup] -->
+<form [formGroup]="form" (ngSubmit)="submit()" class="problem-form">
+
+  <!-- ── SECTION 1: Problem Setup ────────────────────────────── -->
+  <div class="form-section">
+    <h3 class="section-title">
+      <span class="section-icon">⚙️</span>
+      Problem Setup
+    </h3>
+
+    <div class="setup-row">
+      <!-- Objective Type (Max/Min) -->
+      <div class="form-field">
+        <label for="objective-select">Objective</label>
+        <!-- formControlName connects this <select> to form.objective -->
+        <select id="objective-select" formControlName="objective">
+          <option value="max">Maximize</option>
+          <option value="min">Minimize</option>
+        </select>
+      </div>
+
+      <!-- Number of Variables -->
+      <div class="form-field">
+        <label for="num-vars-input">Variables</label>
+        <!-- This is NOT part of the FormGroup — it's a standalone input
+             that triggers onVariablesChange() to rebuild the form -->
+        <input
+          id="num-vars-input"
+          type="number"
+          [value]="numVariables()"
+          (change)="onVariablesChange($event)"
+          min="1"
+          max="10"
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 2: Objective Function ───────────────────────── -->
+  <div class="form-section">
+    <h3 class="section-title">
+      <span class="section-icon">🎯</span>
+      Objective Function
+    </h3>
+
+    <p class="section-hint">
+      <!-- Show live preview of the function -->
+      {{ form.get('objective')?.value === 'max' ? 'Maximize' : 'Minimize' }}
+      Z =
+      @for (i of coefficientsArray.controls; track i; let idx = $index) {
+        @if (idx > 0) {
+          <span class="operator-text"> + </span>
+        }
+        <span class="var-preview">c{{ idx + 1 }}·x{{ idx + 1 }}</span>
+      }
+    </p>
+
+    <!-- formArrayName connects this <div> to form.coefficients (FormArray) -->
+    <div class="coeff-row" formArrayName="coefficients">
+      <!--
+        🔑 @for LOOP:
+        @for (control of array; track control; let idx = $index)
+          - 'track control' tells Angular how to identify each item
+            for efficient DOM updates (like trackBy in old *ngFor)
+          - 'let idx = $index' gives us the loop index
+      -->
+      @for (control of coefficientsArray.controls; track control; let idx = $index) {
+        <div class="coeff-input-group">
+          <label>x{{ idx + 1 }}</label>
+          <!-- [formControlName]="idx" binds to coefficients[idx] -->
+          <input
+            type="number"
+            [formControlName]="idx"
+            placeholder="0"
+            [id]="'obj-coeff-' + idx"
+          >
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- ── SECTION 3: Constraints ──────────────────────────────── -->
+  <div class="form-section">
+    <h3 class="section-title">
+      <span class="section-icon">📐</span>
+      Constraints
+      <button type="button" class="btn btn-secondary btn-sm add-btn" (click)="addConstraint()">
+        + Add
+      </button>
+    </h3>
+
+    <!-- formArrayName="constraints" binds to our constraints FormArray -->
+    <div class="constraints-list" formArrayName="constraints">
+
+      <!--
+        Nested loop: each constraint is a FormGroup inside the FormArray.
+        [formGroupName]="i" tells Angular which FormGroup in the array
+        to bind this block to.
+      -->
+      @for (constraint of constraintsArray.controls; track constraint; let i = $index) {
+        <div class="constraint-row animate-fade-in-up" [formGroupName]="i">
+
+          <span class="constraint-number">{{ i + 1 }}</span>
+
+          <!-- Constraint coefficients (nested FormArray) -->
+          <div class="constraint-coeffs" formArrayName="coefficients">
+            @for (coeff of getConstraintCoefficients(i).controls; track coeff; let j = $index) {
+              <div class="coeff-input-group compact">
+                <span class="var-label">x{{ j + 1 }}</span>
+                <input
+                  type="number"
+                  [formControlName]="j"
+                  placeholder="0"
+                  [id]="'constraint-' + i + '-coeff-' + j"
+                >
+              </div>
+              @if (j < getConstraintCoefficients(i).controls.length - 1) {
+                <span class="plus-sign">+</span>
+              }
+            }
+          </div>
+
+          <!-- Operator (<=, >=, =) -->
+          <select formControlName="operator" class="operator-select" [id]="'constraint-' + i + '-op'">
+            <option value="<=">&le;</option>
+            <option value=">=">&ge;</option>
+            <option value="=">=</option>
+          </select>
+
+          <!-- RHS value -->
+          <input
+            type="number"
+            formControlName="rhs"
+            placeholder="0"
+            class="rhs-input"
+            [id]="'constraint-' + i + '-rhs'"
+          >
+
+          <!-- Remove button (disabled if only 1 constraint) -->
+          <button
+            type="button"
+            class="btn btn-danger btn-sm remove-btn"
+            (click)="removeConstraint(i)"
+            [disabled]="constraintsArray.length <= 1"
+            [id]="'remove-constraint-' + i"
+          >
+            ✕
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- ── SUBMIT BUTTON ───────────────────────────────────────── -->
+  <button
+    type="submit"
+    class="btn btn-primary submit-btn"
+    [disabled]="form.invalid || loading()"
+    id="solve-button"
+  >
+    <!--
+      @if / @else — conditional rendering
+      Shows a spinner while loading, or the "Solve" text otherwise.
+    -->
+    @if (loading()) {
+      <span class="spinner"></span>
+      Solving...
+    } @else {
+      🚀 Solve Problem
+    }
+  </button>
+
+</form>

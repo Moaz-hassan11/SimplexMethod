@@ -1,0 +1,116 @@
+/* ================================================================
+   APP STYLES — app.css (Root Component Styles)
+   ================================================================
+
+   🔑 KEY CONCEPT: :host selector
+   ───────────────────────────────
+   In Angular, :host refers to the component's HOST ELEMENT —
+   the <app-root> tag itself. This lets you style the root
+   container of the component from within its own CSS.
+
+   Without :host, you can only style elements INSIDE the template.
+   With :host, you can style the component element itself.
+   ================================================================ */
+
+/* ── Host Element ────────────────────────────────────────────── */
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── Header ──────────────────────────────────────────────────── */
+.app-header {
+  padding: var(--space-md) var(--space-xl);
+  border-bottom: 1px solid var(--color-border);
+  background: rgba(10, 14, 26, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.brand-icon {
+  font-size: 2rem;
+}
+
+.app-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.app-subtitle {
+  font-size: 0.8rem;
+  color: var(--color-text-dim);
+  font-weight: 400;
+}
+
+/* ── Main Content ────────────────────────────────────────────── */
+.app-main {
+  flex: 1;
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--space-xl);
+}
+
+/* Two-column grid layout */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+  align-items: start;    /* Columns don't stretch to same height */
+}
+
+.column-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-dim);
+  margin-bottom: var(--space-md);
+}
+
+/* ── Footer ──────────────────────────────────────────────────── */
+.app-footer {
+  padding: var(--space-lg) var(--space-xl);
+  text-align: center;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-dim);
+  font-size: 0.8rem;
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .content-grid {
+    grid-template-columns: 1fr;   /* Stack columns on mobile */
+  }
+
+  .app-main {
+    padding: var(--space-md);
+  }
+
+  .app-header {
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .app-title {
+    font-size: 1.2rem;
+  }
+}

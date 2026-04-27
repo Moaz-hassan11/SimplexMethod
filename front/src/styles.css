@@ -1,0 +1,313 @@
+/* ================================================================
+   GLOBAL STYLES — styles.css
+   ================================================================
+   This file is loaded by EVERY page in the app (configured in
+   angular.json → "styles": ["src/styles.css"]).
+
+   We use CSS Custom Properties (variables) to create a design
+   system. This means if you change --color-primary here,
+   it changes EVERYWHERE automatically.
+   ================================================================ */
+
+/* ── CSS RESET ──────────────────────────────────────────────────
+   Browsers add default margins, padding, and box-sizing.
+   We reset everything so our styles are consistent.
+   ─────────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;  /* padding/border included in width */
+}
+
+/* ── DESIGN TOKENS (CSS Variables) ─────────────────────────────
+   :root means "the <html> element". Variables defined here
+   are available in ALL elements via var(--name).
+   ─────────────────────────────────────────────────────────────── */
+:root {
+  /* ── Colors ─────────────────────────────────────────────────── */
+  --color-bg-primary:    #0a0e1a;       /* Deep navy background    */
+  --color-bg-secondary:  #111827;       /* Slightly lighter panels */
+  --color-bg-card:       rgba(17, 24, 39, 0.7); /* Glass cards     */
+  --color-bg-input:      #1a2035;       /* Input field backgrounds */
+
+  --color-accent-cyan:   #00d4ff;       /* Primary accent          */
+  --color-accent-purple: #7c3aed;       /* Secondary accent        */
+  --color-accent-green:  #10b981;       /* Success / Optimal       */
+  --color-accent-red:    #ef4444;       /* Error / Infeasible      */
+  --color-accent-amber:  #f59e0b;       /* Warning / Unbounded     */
+
+  --color-text-primary:  #f1f5f9;       /* Main text (almost white)*/
+  --color-text-secondary:#94a3b8;       /* Muted text              */
+  --color-text-dim:      #475569;       /* Very muted              */
+
+  --color-border:        rgba(148, 163, 184, 0.12); /* Subtle borders */
+  --color-border-focus:  rgba(0, 212, 255, 0.5);    /* Focus ring     */
+
+  /* ── Gradient ────────────────────────────────────────────────── */
+  --gradient-accent: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
+  --gradient-card:   linear-gradient(135deg,
+                       rgba(0, 212, 255, 0.08) 0%,
+                       rgba(124, 58, 237, 0.08) 100%);
+
+  /* ── Typography ──────────────────────────────────────────────── */
+  --font-sans:  'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono:  'JetBrains Mono', 'Fira Code', monospace;
+
+  /* ── Spacing ─────────────────────────────────────────────────── */
+  --space-xs:  0.25rem;   /*  4px */
+  --space-sm:  0.5rem;    /*  8px */
+  --space-md:  1rem;      /* 16px */
+  --space-lg:  1.5rem;    /* 24px */
+  --space-xl:  2rem;      /* 32px */
+  --space-2xl: 3rem;      /* 48px */
+
+  /* ── Border Radius ───────────────────────────────────────────── */
+  --radius-sm: 0.375rem;  /*  6px */
+  --radius-md: 0.75rem;   /* 12px */
+  --radius-lg: 1rem;      /* 16px */
+  --radius-xl: 1.5rem;    /* 24px */
+
+  /* ── Shadows ─────────────────────────────────────────────────── */
+  --shadow-card:  0 4px 24px rgba(0, 0, 0, 0.3);
+  --shadow-glow:  0 0 20px rgba(0, 212, 255, 0.15);
+  --shadow-input: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+  /* ── Transitions ─────────────────────────────────────────────── */
+  --transition-fast:   0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow:   0.5s ease;
+}
+
+/* ── BASE STYLES ───────────────────────────────────────────────── */
+html {
+  font-size: 16px;              /* 1rem = 16px */
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Subtle mesh gradient background */
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(124, 58, 237, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(16, 185, 129, 0.03) 0%, transparent 50%);
+  background-attachment: fixed;
+}
+
+/* ── UTILITY CLASSES ───────────────────────────────────────────── */
+
+/* Glassmorphism card — frosted glass effect */
+.glass-card {
+  background: var(--color-bg-card);
+  backdrop-filter: blur(16px);          /* The "frosted glass" blur */
+  -webkit-backdrop-filter: blur(16px);  /* Safari support          */
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+/* Gradient text (used for headings) */
+.gradient-text {
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;       /* Clip gradient to text shape */
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── FORM ELEMENTS ─────────────────────────────────────────────── */
+/* Global input/select styling so every form looks consistent */
+
+input[type="number"],
+input[type="text"],
+select {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  background: var(--color-bg-input);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.75rem;
+  outline: none;
+  transition: border-color var(--transition-fast),
+              box-shadow var(--transition-fast);
+}
+
+input[type="number"]:focus,
+input[type="text"]:focus,
+select:focus {
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+}
+
+/* Remove number input spinner arrows for cleaner look */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* ── BUTTON BASE ───────────────────────────────────────────────── */
+.btn {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all var(--transition-normal);
+  white-space: nowrap;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Primary gradient button */
+.btn-primary {
+  background: var(--gradient-accent);
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(0, 212, 255, 0.25);
+}
+
+.btn-primary:hover:not(:disabled) {
+  box-shadow: 0 6px 25px rgba(0, 212, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Secondary ghost button */
+.btn-secondary {
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: rgba(148, 163, 184, 0.08);
+  color: var(--color-text-primary);
+  border-color: rgba(148, 163, 184, 0.25);
+}
+
+/* Danger button */
+.btn-danger {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--color-accent-red);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.25);
+}
+
+/* Small button variant */
+.btn-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8rem;
+}
+
+/* ── ANIMATIONS ────────────────────────────────────────────────── */
+
+/* Fade-in from below — used when results appear */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+/* Pulse glow — used on loading state */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(0, 212, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(0, 212, 255, 0.4);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* Spinner rotation */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+/* Stagger animation — each child fades in with delay */
+.stagger-children > * {
+  opacity: 0;
+  animation: fadeInUp 0.4s ease-out forwards;
+}
+
+.stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.10s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.20s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.30s; }
+.stagger-children > *:nth-child(7) { animation-delay: 0.35s; }
+.stagger-children > *:nth-child(8) { animation-delay: 0.40s; }
+
+/* ── SCROLLBAR STYLING ─────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-text-dim);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* ── RESPONSIVE ────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;   /* Scale everything down on mobile */
+  }
+}

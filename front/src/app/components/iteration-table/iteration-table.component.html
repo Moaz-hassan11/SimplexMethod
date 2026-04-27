@@ -1,0 +1,98 @@
+<!-- ================================================================
+     ITERATION TABLE TEMPLATE — iteration-table.component.html
+     ================================================================
+
+     🔑 Demonstrates:
+     - @for with nested @for (2D array rendering)
+     - Conditional CSS classes with [class.xxx]="expression"
+     - Signal reading: iterations(), isExpanded(), etc.
+     - (click) event binding to toggle sections
+================================================================ -->
+
+<!-- Only show this section if there are iterations to display -->
+@if (iterations().length > 0) {
+  <div class="iterations-section">
+    <h3 class="iterations-title gradient-text">
+      📋 Simplex Iterations ({{ iterations().length }} steps)
+    </h3>
+
+    <div class="iterations-timeline">
+      <!--
+        🔑 @for LOOP — Iterating the iterations array.
+        'track iteration.iterationNumber' tells Angular to use
+        iterationNumber as a unique key for DOM recycling.
+        This is important for performance — Angular can reuse
+        DOM elements instead of destroying/recreating them.
+      -->
+      @for (iteration of iterations(); track iteration.iterationNumber; let idx = $index) {
+        <div class="iteration-card glass-card animate-fade-in-up"
+             [class.expanded]="isExpanded(idx)">
+
+          <!-- Step Header (clickable to expand/collapse) -->
+          <button class="step-header" (click)="toggleStep(idx)"
+                  [id]="'iteration-header-' + idx">
+            <div class="step-indicator">
+              <span class="step-number">{{ iteration.iterationNumber }}</span>
+              <span class="step-line"></span>
+            </div>
+            <div class="step-info">
+              <span class="step-title">Iteration {{ iteration.iterationNumber }}</span>
+              <span class="step-z">Z = {{ iteration.objectiveValue }}</span>
+            </div>
+            <span class="step-chevron" [class.rotated]="isExpanded(idx)">▶</span>
+          </button>
+
+          <!-- Expandable Tableau Content -->
+          @if (isExpanded(idx)) {
+            <div class="step-content animate-fade-in-up">
+
+              <!-- Basis Variables -->
+              @if (iteration.basisVariables && iteration.basisVariables.length > 0) {
+                <div class="basis-info">
+                  <span class="basis-label">Basis:</span>
+                  @for (bv of iteration.basisVariables; track bv) {
+                    <span class="basis-var">{{ bv }}</span>
+                  }
+                </div>
+              }
+
+              <!-- Pivot Info -->
+              @if (iteration.pivotRow !== undefined && iteration.pivotColumn !== undefined) {
+                <div class="pivot-info">
+                  Pivot: Row {{ iteration.pivotRow }}, Column {{ iteration.pivotColumn }}
+                </div>
+              }
+
+              <!-- Tableau Table -->
+              <div class="tableau-wrapper">
+                <table class="tableau">
+                  <!--
+                    🔑 NESTED @for — Rendering a 2D array.
+                    Outer loop = rows, Inner loop = columns.
+                    This is how you render a matrix/table in Angular.
+                  -->
+                  @for (row of iteration.tableau; track $index; let rIdx = $index) {
+                    <tr>
+                      @for (cell of row; track $index; let cIdx = $index) {
+                        <td
+                          [class.pivot-cell]="isPivot(iteration, rIdx, cIdx)"
+                          [class.negative]="cell < 0"
+                        >
+                          <!--
+                            toFixed(4) limits decimal places for readability.
+                            The ternary avoids "-0.0000" display.
+                          -->
+                          {{ cell === 0 ? '0' : cell.toFixed(4) }}
+                        </td>
+                      }
+                    </tr>
+                  }
+                </table>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}

@@ -1,0 +1,97 @@
+<!-- ================================================================
+     RESULTS PANEL TEMPLATE — results-panel.component.html
+     ================================================================
+
+     🔑 KEY CONCEPT: @if / @else Conditional Rendering
+     ──────────────────────────────────────────────────
+     @if (condition) { ... } @else if (other) { ... } @else { ... }
+
+     This is Angular's built-in control flow (v17+). It replaces
+     the old *ngIf directive. It's compiled at build time so it's
+     faster than the directive-based approach.
+
+     🔑 KEY CONCEPT: Signal Reading in Templates
+     ────────────────────────────────────────────
+     In the template, we call signals as functions: result()
+     When result()'s value changes, Angular knows to re-render
+     only the affected part of the DOM — very efficient.
+
+     🔑 KEY CONCEPT: KeyValuePipe
+     ─────────────────────────────
+     To loop over object keys:
+       @for (entry of object | keyvalue; track entry.key) {
+         {{ entry.key }} = {{ entry.value }}
+       }
+================================================================ -->
+
+<!-- Show nothing if there's no result, no error, and not loading -->
+@if (loading()) {
+  <!-- ── LOADING STATE ─────────────────────────────────────────── -->
+  <div class="results-container glass-card animate-pulse-glow">
+    <div class="loading-content">
+      <div class="spinner large"></div>
+      <p class="loading-text">Running Simplex Method...</p>
+      <p class="loading-subtext">Solving your linear programming problem</p>
+    </div>
+  </div>
+} @else if (error()) {
+  <!-- ── ERROR STATE ───────────────────────────────────────────── -->
+  <div class="results-container glass-card animate-fade-in-up">
+    <div class="error-content">
+      <span class="error-icon">⛔</span>
+      <h3 class="error-title">Error</h3>
+      <p class="error-message">{{ error() }}</p>
+    </div>
+  </div>
+} @else if (result()) {
+  <!-- ── RESULT STATE ──────────────────────────────────────────── -->
+  <div class="results-container glass-card animate-fade-in-up">
+
+    <!-- Status Badge -->
+    <div class="status-badge" [class]="statusClass()">
+      {{ statusLabel() }}
+    </div>
+
+    <!-- Optimal Value -->
+    @if (result()?.status === 'optimal') {
+      <div class="optimal-section stagger-children">
+        <div class="optimal-value-card">
+          <span class="optimal-label">Optimal Value (Z*)</span>
+          <span class="optimal-value">{{ result()?.optimalValue }}</span>
+        </div>
+
+        <!-- Variable Values -->
+        @if (result()?.variables) {
+          <h4 class="vars-title">Decision Variables</h4>
+          <div class="variables-grid">
+            <!--
+              🔑 keyvalue pipe converts { "x1": 3, "x2": 1.5 } into
+              [{ key: "x1", value: 3 }, { key: "x2", value: 1.5 }]
+              so we can loop over it with @for
+            -->
+            @for (entry of result()?.variables | keyvalue; track entry.key) {
+              <div class="variable-card">
+                <span class="var-name">{{ entry.key }}</span>
+                <span class="var-value">{{ entry.value }}</span>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Info Message (for infeasible/unbounded) -->
+    @if (result()?.message) {
+      <p class="info-message">{{ result()?.message }}</p>
+    }
+  </div>
+} @else {
+  <!-- ── EMPTY STATE — Before the user submits ─────────────────── -->
+  <div class="results-container glass-card empty-state">
+    <div class="empty-content">
+      <span class="empty-icon">📊</span>
+      <h3 class="empty-title">Results will appear here</h3>
+      <p class="empty-text">Define your LP problem and click "Solve" to see the solution</p>
+    </div>
+  </div>
+}

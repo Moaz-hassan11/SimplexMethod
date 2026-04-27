@@ -1,0 +1,89 @@
+<!-- ================================================================
+     APP TEMPLATE — app.html (Root Template)
+     ================================================================
+
+     This is the MAIN LAYOUT of the app. It contains:
+       1. A header with the app title
+       2. A two-column layout: form (left) + results (right)
+       3. The iterations section (full width, below)
+
+     🔑 KEY CONCEPT: Using Child Components
+     ───────────────────────────────────────
+     Since we imported ProblemFormComponent in app.ts,
+     we can use its selector <app-problem-form> as an HTML tag.
+
+     Angular sees this tag, creates a ProblemFormComponent instance,
+     and renders its template (problem-form.component.html) in place.
+
+     Data flows:
+       - ProblemFormComponent → calls SimplexService.solve()
+       - SimplexService → updates signals (result, loading, error)
+       - ResultsPanelComponent → reads those signals and renders
+       - IterationTableComponent → reads iterations from signals
+
+     All through the shared SimplexService (singleton). No need
+     for @Input/@Output between siblings — the service acts as
+     a shared state store.
+================================================================ -->
+
+<!-- ── HEADER ────────────────────────────────────────────────── -->
+<header class="app-header">
+  <div class="header-content">
+    <div class="brand">
+      <span class="brand-icon">🔢</span>
+      <div class="brand-text">
+        <h1 class="app-title gradient-text">Simplex Solver</h1>
+        <p class="app-subtitle">Linear Programming — Simplex Method</p>
+      </div>
+    </div>
+    <button
+      class="btn btn-secondary btn-sm"
+      (click)="simplexService.reset()"
+      id="reset-button">
+      ↺ Reset
+    </button>
+  </div>
+</header>
+
+<!-- ── MAIN CONTENT ──────────────────────────────────────────── -->
+<main class="app-main">
+  <div class="content-grid">
+
+    <!-- LEFT COLUMN: Problem Input Form -->
+    <section class="form-column" aria-label="Problem Input">
+      <h2 class="column-title">Define Problem</h2>
+      <!--
+        This is a CHILD COMPONENT.
+        Angular renders ProblemFormComponent's template here.
+        The component has its own TypeScript, HTML, and CSS —
+        completely encapsulated.
+      -->
+      <app-problem-form></app-problem-form>
+    </section>
+
+    <!-- RIGHT COLUMN: Solution Results -->
+    <section class="results-column" aria-label="Solution Results">
+      <h2 class="column-title">Solution</h2>
+      <!--
+        ResultsPanelComponent reads from SimplexService signals.
+        When the service's result signal changes, this component
+        automatically re-renders — no manual wiring needed.
+      -->
+      <app-results-panel></app-results-panel>
+    </section>
+
+  </div>
+
+  <!-- FULL WIDTH: Simplex Iterations (below the grid) -->
+  <!--
+    IterationTableComponent reads iterations from the service.
+    If there are no iterations, it renders nothing (@if check).
+  -->
+  <app-iteration-table></app-iteration-table>
+
+</main>
+
+<!-- ── FOOTER ────────────────────────────────────────────────── -->
+<footer class="app-footer">
+  <p>Operations Research — Simplex Method Solver</p>
+</footer>
